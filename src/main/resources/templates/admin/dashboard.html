@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Grupo BM</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Admin CSS -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <!-- Sidebar -->
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+        
+        <!-- Dashboard Content -->
+        <div class="content-container">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle">Bienvenido de vuelta, <span th:text="${session.user != null ? session.user.nombre : 'Administrador'}">Administrador</span></p>
+            </div>
+            
+            <!-- Mensaje de bienvenida -->
+            <div class="card mt-8">
+                <div class="card-body text-center py-12">
+                    <i class="fas fa-smile-wink text-6xl text-[#8B0000] mb-4"></i>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">¡Bienvenido al Panel de Administración!</h2>
+                    <p class="text-gray-600">Desde aquí puedes gestionar usuarios, servicios, galería, blog y más. Utiliza el menú lateral para navegar.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin JS -->
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

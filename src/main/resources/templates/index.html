@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grupo BM - Cortinas Industriales y Cortes Metálicos</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="service-hero-modal" id="serviceModal">
+    <div class="close-modal" onclick="closeServiceModal()"><i class="fas fa-times"></i></div>
+    <div class="service-hero-content" id="serviceModalContent"></div>
+</div>
+
+<main>
+
+	<!-- HERO -->
+	<section class="hero-overlay flex items-center justify-center text-white">
+	    <div class="container mx-auto px-4 text-center" data-aos="fade-up">
+	        <img th:if="${contenidos.get('logo_url') != null}" th:src="${contenidos.get('logo_url')}" alt="Grupo BM" class="hero-logo mb-2" onerror="this.style.display='none'">
+	        <img th:unless="${contenidos.get('logo_url') != null}" src="img/Logo_Cortes.png" alt="Grupo BM" class="hero-logo mb-2" onerror="this.style.display='none'">
+	        <h1 class="text-4xl md:text-7xl font-bold mb-4 leading-tight" th:utext="${contenidos.get('hero_titulo') != null ? contenidos.get('hero_titulo') : 'Cortinas de acero para<br>locales comerciales, bodegas y accesos de seguridad.'}">
+	            Cortinas de acero para<br>locales comerciales, bodegas y accesos de seguridad.
+	        </h1>
+	        <p class="hero-subtitle" th:text="${contenidos.get('hero_subtitulo') != null ? contenidos.get('hero_subtitulo') : 'Fabricamos y suministramos soluciones integrales para cortinas de acero, ofreciendo todo lo necesario en materiales, componentes y procesos, con calidad, experiencia y servicio profesional.'}">
+	            Fabricamos y suministramos soluciones integrales para cortinas de acero, ofreciendo todo lo necesario en materiales, componentes y procesos, con calidad, experiencia y servicio profesional.
+	        </p>
+	        <div class="hero-buttons mb-16">
+	            <a href="#contacto" class="btn-vino"><i class="fas fa-file-invoice mr-2"></i>Solicitar Cotización</a>
+	            <a href="#galeria" class="btn-outline"><i class="fas fa-images mr-2"></i>Ver Galería</a>
+	        </div>
+	    </div>
+	</section>
+
+    <!-- NÚMEROS -->
+    <section class="pt-20 pb-10 bg-gradient-to-b from-gray-50 to-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-down">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 section-title">Grupo BM en Números</h2>
+                <p class="text-gray-600 text-lg mt-8">Líderes en el sector industrial mexicano</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="counter-box" data-aos="zoom-in">
+                    <i class="fas fa-calendar-alt text-5xl mb-4"></i>
+                    <div class="counter-number" data-target="25" data-prefix="+">0</div>
+                    <p class="text-lg font-semibold mt-2">Años de Experiencia</p>
+                </div>
+                <div class="counter-box" data-aos="zoom-in" data-aos-delay="100">
+                    <i class="fas fa-layer-group text-5xl mb-4"></i>
+                    <div class="counter-number" data-target="15" data-prefix="+">0</div>
+                    <p class="text-lg font-semibold mt-2">Diseños y Materiales Disponibles</p>
+                </div>
+                <div class="counter-box" data-aos="zoom-in" data-aos-delay="200">
+                    <i class="fas fa-tools text-5xl mb-4"></i>
+                    <div class="counter-number" data-target="10" data-prefix="+">0</div>
+                    <p class="text-lg font-semibold mt-2">Servicios Especializados</p>
+                </div>
+                <div class="counter-box" data-aos="zoom-in" data-aos-delay="300">
+                    <i class="fas fa-map-marked-alt text-5xl mb-4"></i>
+                    <div class="counter-number" data-target="32">0</div>
+                    <p class="text-lg font-semibold mt-2">Estados de la República</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+	<!-- SERVICIOS DINÁMICOS DESDE BD -->
+	<section class="py-20 bg-white border-t-4 border-[#8B0000]" id="paquetes">
+	    <div class="container mx-auto px-4">
+	        <div class="text-center mb-8" data-aos="fade-down">
+	            <h2 class="text-4xl md:text-5xl font-bold mb-4 section-title">Servicios</h2>
+	        </div>
+	        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+	            <!-- Iterar sobre servicios activos -->
+	            <div th:each="s : ${servicios}" class="package-card" th:attr="data-id=${s.id}" onclick="openServiceModalById(this)">
+	                <!-- Badge condicional (sin operador ternario en el atributo) -->
+	                <span th:if="${s.titulo.contains('Exclusivos') or s.titulo.contains('Registro')}" class="package-badge">Registro IMPI</span>
+	                
+	                <!-- Imagen principal -->
+	                <img th:if="${not #lists.isEmpty(s.imagenesList)}" th:src="${s.imagenesList[0]}" class="package-img" alt="Imagen del servicio" onerror="this.src='https://via.placeholder.com/800x600?text=Grupo+BM'">
+	                <img th:unless="${not #lists.isEmpty(s.imagenesList)}" src="https://via.placeholder.com/800x600?text=Grupo+BM" class="package-img" alt="Sin imagen">
+	                
+	                <!-- Contenido de la tarjeta -->
+	                <div class="package-content" th:classappend="${s.titulo.contains('Exclusivos') ? 'bg-gradient-to-r from-[#8B0000] to-[#4A0404]' : ''}">
+	                    <h3 class="package-title" th:text="${s.titulo}" th:classappend="${s.titulo.contains('Exclusivos') ? 'text-white' : ''}"></h3>
+	                    <button class="package-btn" th:classappend="${s.titulo.contains('Exclusivos') ? 'border-white text-white' : ''}">
+	                        Ver detalles <i class="fas fa-arrow-right ml-2"></i>
+	                    </button>
+	                </div>
+	            </div>
+
+	            <!-- Mensaje si no hay servicios -->
+	            <div th:if="${#lists.isEmpty(servicios)}" class="col-span-full text-center py-10 text-gray-500">
+	                <i class="fas fa-cogs text-4xl mb-4 block"></i>
+	                <p>Próximamente nuevos servicios.</p>
+	            </div>
+
+	        </div>
+	    </div>
+	</section>
+	
+	
+	<!-- NOSOTROS -->
+	<section class="py-20 bg-gray-100" id="nosotros">
+	    <div class="container mx-auto px-4">
+	        <div class="max-w-4xl mx-auto text-center">
+	            <h2 class="text-4xl md:text-5xl font-bold mb-6 text-[#2C0101]" th:text="${contenidos.get('nosotros_titulo')}">Nosotros</h2>
+	            <div class="w-24 h-1 bg-[#8B0000] mx-auto mb-8"></div>
+	            <p class="text-lg mb-4" th:utext="${contenidos.get('nosotros_parrafo1')}">Somos una empresa con <strong class="text-[#8B0000]">más de 25 años de experiencia</strong> en cortinas de acero.</p>
+	            <p class="text-lg mb-4" th:utext="${contenidos.get('nosotros_parrafo2')}">Nos dedicamos a la <strong class="text-[#8B0000]">fabricación de tira para cortina</strong>, así como al suministro de material y cortinas listas para su instalación.</p>
+	            <p class="text-lg" th:utext="${contenidos.get('nosotros_parrafo3')}">Hoy seguimos evolucionando e incorporamos <strong class="text-[#8B0000]">corte metálico CNC</strong>, ampliando nuestras capacidades para brindar soluciones más completas.</p>
+	        </div>
+	    </div>
+	</section>
+
+	<!-- GALERÍA DINÁMICA DESDE BD -->
+	<section class="py-20 bg-white" id="galeria">
+	    <div class="container mx-auto px-4">
+	        <div class="text-center mb-16" data-aos="fade-down">
+	            <h2 class="text-4xl md:text-5xl font-bold mb-4 section-title">Galería</h2>
+	            <p class="text-gray-600 text-lg">— Nuestros trabajos —</p>
+	        </div>
+	        <div class="gallery-grid" id="galeriaGrid">
+	            <!-- Se llenará dinámicamente con JavaScript usando datos de la API -->
+	        </div>
+	    </div>
+	</section>
+
+	<!-- LIGHTBOX (igual) -->
+	<div class="gallery-lightbox" id="galleryLightbox" onclick="closeLightbox()">
+	    <div class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></div>
+	    <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation(); navLightbox(-1)">
+	        <i class="fas fa-chevron-left"></i>
+	    </button>
+	    <div class="lightbox-content" onclick="event.stopPropagation()">
+	        <img id="lightboxImg" src="" alt="">
+	        <p id="lightboxCaption"></p>
+	    </div>
+	    <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation(); navLightbox(1)">
+	        <i class="fas fa-chevron-right"></i>
+	    </button>
+	</div>
+
+	<!-- CLIENTES DINÁMICOS DESDE BD -->
+	<section class="py-20 bg-gray-100" id="clientes">
+	    <div class="container mx-auto px-4">
+	        <div class="text-center mb-16" data-aos="fade-down">
+	            <h2 class="text-4xl md:text-5xl font-bold mb-4 section-title">Nuestros Clientes</h2>
+	            <p class="text-gray-600 text-lg">Empresas que confían en nosotros</p>
+	        </div>
+	        <div class="client-swiper swiper" data-aos="fade-up">
+	            <div class="swiper-wrapper" id="clientesSwiperWrapper">
+	                <!-- Se llenará dinámicamente con JavaScript -->
+	            </div>
+	            <div class="swiper-pagination"></div>
+	        </div>
+	    </div>
+	</section>
+
+	<!-- CONTACTO -->
+	<section class="py-20 bg-gradient-to-r from-[#2C0101] to-[#4A0404] text-white" id="contacto">
+	    <div class="container mx-auto px-4">
+	        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+	            <div data-aos="fade-right">
+	                <h2 class="text-4xl font-bold mb-4">¿Listo para proteger tu negocio?</h2>
+	                <div class="w-24 h-1 bg-[#8B0000] mb-6"></div>
+	                <p class="text-lg mb-8 text-gray-300">Solicita una cotización sin compromiso. Respuesta en menos de 24 horas.</p>
+	                <div class="space-y-4">
+	                    <div class="flex items-center">
+	                        <div class="bg-[#8B0000] w-12 h-12 rounded-full flex items-center justify-center mr-4"><i class="fas fa-phone-alt text-white text-xl"></i></div>
+	                        <div><p class="text-sm text-gray-300">Teléfono</p><p class="font-semibold text-lg">+52 (55) 1234 5678</p></div>
+	                    </div>
+	                    <div class="flex items-center">
+	                        <div class="bg-[#8B0000] w-12 h-12 rounded-full flex items-center justify-center mr-4"><i class="fab fa-whatsapp text-white text-xl"></i></div>
+	                        <div><p class="text-sm text-gray-300">WhatsApp</p><p class="font-semibold text-lg">+52 564 409 1155</p></div>
+	                    </div>
+	                    <div class="flex items-center">
+	                        <div class="bg-[#8B0000] w-12 h-12 rounded-full flex items-center justify-center mr-4"><i class="fas fa-envelope text-white text-xl"></i></div>
+	                        <div><p class="text-sm text-gray-300">Correo</p><p class="font-semibold text-lg">grupobm.industrial@gmail.com</p></div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="bg-white p-8 rounded-2xl shadow-2xl" data-aos="fade-left">
+	                <h3 class="text-2xl font-bold text-[#2C0101] mb-6">Envíanos un mensaje</h3>
+	                <form id="contactForm" onsubmit="sendViaWhatsApp(event)">
+	                    <div class="mb-4">
+	                        <input type="text" id="nombre" placeholder="Nombre completo" class="form-control-modern w-full" required>
+	                    </div>
+	                    <div class="mb-4">
+	                        <input type="email" id="email" placeholder="Correo electrónico" class="form-control-modern w-full" required>
+	                    </div>
+	                    <div class="mb-4">
+	                        <textarea id="mensaje" rows="4" placeholder="Mensaje o detalles de tu proyecto" class="form-control-modern w-full" required></textarea>
+	                    </div>
+	                    <button type="submit" class="w-full bg-[#8B0000] text-white py-3 rounded-lg font-bold text-lg hover:bg-[#4A0404] transition transform hover:scale-105 shadow-lg">
+	                        <i class="fab fa-whatsapp mr-2"></i>Enviar por WhatsApp
+	                    </button>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+	</section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<a href="https://wa.me/525644091155?text=Hola%20Grupo%20BM,%20me%20interesa%20una%20cotización" class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

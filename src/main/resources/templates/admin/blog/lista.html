@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog - Admin Grupo BM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-galeria.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <div class="main-content">
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+        <div class="content-container">
+            <div class="page-header">
+                <div><h1 class="page-title">Blog</h1><p class="page-subtitle">Administra los artículos del blog</p></div>
+                <a th:href="@{/admin/blogs/nuevo}" class="btn-primary-admin"><i class="fas fa-plus"></i> Nuevo Artículo</a>
+            </div>
+            <div th:if="${exito}" class="alert-admin alert-success-admin" th:text="${exito}"></div>
+            <div th:if="${error}" class="alert-admin alert-danger-admin" th:text="${error}"></div>
+            <div class="galeria-grid">
+                <div th:each="a : ${articulos}" class="galeria-card">
+                    <div class="galeria-img-wrapper" style="aspect-ratio: 1 / 0.7;">
+                        <img th:if="${a.imagenPortada != null}" th:src="${a.imagenPortada}" class="galeria-img" onerror="this.src='https://via.placeholder.com/400x280?text=Sin+imagen'">
+                        <img th:unless="${a.imagenPortada != null}" src="https://via.placeholder.com/400x280?text=Sin+imagen" class="galeria-img">
+                        <div class="galeria-overlay">
+                            <a th:href="@{/admin/blogs/editar/{id}(id=${a.id})}" class="btn-overlay edit"><i class="fas fa-edit"></i> Editar</a>
+                            <form th:action="@{/admin/blogs/eliminar/{id}(id=${a.id})}" method="post" style="display:inline;">
+                                <button type="submit" class="btn-overlay delete" onclick="return confirm('¿Eliminar este artículo?')"><i class="fas fa-trash"></i> Eliminar</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="galeria-desc">
+                        <strong th:text="${a.titulo}"></strong><br>
+                        <span th:if="${a.destacado}" class="badge bg-yellow-200 text-yellow-800 text-xs">Destacado</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

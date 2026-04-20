@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">Formulario Galería</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-galeria.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <div class="main-content">
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+        <div class="content-container">
+            <!-- Cabecera -->
+            <div class="page-header">
+                <h1 class="page-title" th:text="${titulo}">Imagen</h1>
+                <a th:href="@{/admin/galeria}" class="btn-secondary-admin">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+
+            <!-- Formulario -->
+            <form method="post" enctype="multipart/form-data" th:action="@{/admin/galeria/guardar}" class="card-modern formulario-galeria">
+                <input type="hidden" name="id" th:value="${galeriaDTO.id}">
+                <div class="card-body-modern space-y-5">
+                    <!-- Descripción -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Descripción</label>
+                        <input type="text" name="descripcion" th:value="${galeriaDTO.descripcion}" 
+                               class="form-control-modern" required placeholder="Ej: Fachada principal - Sucursal CDMX">
+                    </div>
+
+                    <!-- Orden -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Orden (menor número aparece primero)</label>
+                        <input type="number" name="orden" th:value="${galeriaDTO.orden}" 
+                               class="form-control-modern" placeholder="0, 1, 2...">
+                        <p class="field-hint"><i class="fas fa-info-circle"></i> Las imágenes se ordenan de menor a mayor.</p>
+                    </div>
+
+                    <!-- Subida de imagen con drag & drop -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Imagen</label>
+                        <div id="uploadZone" class="upload-zone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div class="upload-zone-text">Arrastra y suelta tu imagen</div>
+                            <div class="upload-zone-hint">o haz clic para seleccionar</div>
+                            <div class="upload-zone-hint text-xs">JPG, PNG, GIF, WEBP hasta 50MB</div>
+                        </div>
+                        <input type="file" name="imagenFile" id="imagenFile" accept="image/*" style="display:none;" 
+                               th:required="${galeriaDTO.id == null}">
+                        <div id="previewContainer"></div>
+                        <p th:if="${galeriaDTO.id != null}" class="field-hint text-amber-600 mt-2">
+                            <i class="fas fa-info-circle"></i> Dejar en blanco para mantener la imagen actual.
+                        </p>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" class="btn-primary-admin">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                        <a th:href="@{/admin/galeria}" class="btn-secondary-admin">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/admin.js}"></script>
+<script th:src="@{/js/admin-galeria.js}"></script>
+</body>
+</html>

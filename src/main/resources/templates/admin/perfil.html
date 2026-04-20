@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Grupo BM</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Admin CSS -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <!-- Sidebar -->
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+        
+        <!-- Content -->
+        <div class="content-container">
+            
+            <!-- Profile Header -->
+            <div class="profile-header-modern">
+                <div class="profile-info-modern">
+                    <div class="profile-avatar-modern">
+                        <span id="avatarInitial">U</span>
+                    </div>
+                    <div class="profile-details-modern">
+                        <h2 id="userFullName">Cargando...</h2>
+                        <p>
+                            <i class="fas fa-envelope"></i>
+                            <span id="userEmail">-</span>
+                        </p>
+                        <div class="profile-badge-modern">
+                            <i class="fas fa-shield-alt"></i>
+                            <span id="userRole">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- Información Personal Card -->
+                <div class="card-modern">
+                    <div class="card-header-modern">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Información Personal</h3>
+                    </div>
+                    <div class="card-body-modern">
+                        <form id="profileForm">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Nombre</label>
+                                <div class="input-icon-modern">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="nombre" class="form-control-modern" placeholder="Tu nombre" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Apellido</label>
+                                <div class="input-icon-modern">
+                                    <i class="fas fa-user-tag"></i>
+                                    <input type="text" id="apellido" class="form-control-modern" placeholder="Tu apellido" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Correo Electrónico</label>
+                                <div class="input-icon-modern">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" id="email" class="form-control-modern" placeholder="tucorreo@ejemplo.com" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Teléfono</label>
+                                <div class="input-icon-modern">
+                                    <i class="fas fa-phone"></i>
+                                    <input type="tel" id="telefono" class="form-control-modern" placeholder="+52 55 1234 5678">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Dirección</label>
+                                <div class="input-icon-modern">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <input type="text" id="direccion" class="form-control-modern" placeholder="Calle, número, colonia, ciudad">
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn-modern">
+                                <i class="fas fa-save"></i> Guardar Cambios
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Estadísticas de la Cuenta Card -->
+                <div class="card-modern">
+                    <div class="card-header-modern">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Estadísticas de la Cuenta</h3>
+                    </div>
+                    <div class="card-body-modern">
+                        <div class="info-grid-modern">
+                            <div class="info-item-modern">
+                                <div class="info-label-modern">ID de Usuario</div>
+                                <div class="info-value-modern" id="userId">-</div>
+                                <div class="info-sub-modern">Identificador único</div>
+                            </div>
+                            <div class="info-item-modern">
+                                <div class="info-label-modern">Rol</div>
+                                <div class="info-value-modern" id="userRoleValue">-</div>
+                                <div class="info-sub-modern">Nivel de acceso</div>
+                            </div>
+                            <div class="info-item-modern">
+                                <div class="info-label-modern">Estado</div>
+                                <div class="info-value-modern">
+                                    <span class="text-green-500">●</span> Activo
+                                </div>
+                                <div class="info-sub-modern">Cuenta verificada</div>
+                            </div>
+                            <div class="info-item-modern">
+                                <div class="info-label-modern">Miembro desde</div>
+                                <div class="info-value-modern" id="fechaRegistro">-</div>
+                                <div class="info-sub-modern">Fecha de registro</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-grid-modern">
+                            <div class="stat-card-modern">
+                                <div class="stat-icon-modern">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-number-modern" id="diasActivo">-</div>
+                                <div class="stat-label-modern">Días Activo</div>
+                            </div>
+                            <div class="stat-card-modern">
+                                <div class="stat-icon-modern">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </div>
+                                <div class="stat-number-modern" id="ultimoAcceso">-</div>
+                                <div class="stat-label-modern">Último Acceso</div>
+                            </div>
+                            <div class="stat-card-modern">
+                                <div class="stat-icon-modern">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="stat-number-modern" id="totalAccesos">-</div>
+                                <div class="stat-label-modern">Total Accesos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Información de Seguridad Card -->
+            <div class="card-modern mt-6">
+                <div class="card-header-modern">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Seguridad de la Cuenta</h3>
+                </div>
+                <div class="card-body-modern">
+                    <div class="flex items-start gap-4 p-4 bg-green-50 rounded-2xl border border-green-100">
+                        <i class="fas fa-check-circle text-3xl text-green-500"></i>
+                        <div>
+                            <p class="font-semibold text-gray-800">Cuenta protegida</p>
+                            <p class="text-sm text-gray-600 mt-1">
+                                Tu cuenta está protegida con autenticación segura. 
+                                Todos los datos están encriptados y seguros.
+                            </p>
+                            <div class="flex gap-3 mt-3">
+                                <span class="text-xs text-green-600"><i class="fas fa-lock mr-1"></i> Autenticación segura</span>
+                                <span class="text-xs text-green-600"><i class="fas fa-shield-alt mr-1"></i> Protección de datos</span>
+                                <span class="text-xs text-green-600"><i class="fas fa-sync-alt mr-1"></i> Sesión segura</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/js/admin.js}"></script>
+<script th:src="@{/js/perfil.js}"></script>
+</body>
+</html>

@@ -1,0 +1,380 @@
+/* admin-usuarios.css - Estilos profesionales para gestión de usuarios */
+
+/* ============================================
+   TARJETAS Y CONTENEDORES
+   ============================================ */
+.card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.2s ease;
+}
+.card:hover {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+.card-header {
+    padding: 1rem 1.5rem;
+    background: #ffffff;
+    border-bottom: 1px solid #edf2f7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+.card-body {
+    padding: 1.5rem;
+}
+
+/* ============================================
+   TABLA DE USUARIOS (moderna y legible)
+   ============================================ */
+.table-responsive {
+    overflow-x: auto;
+}
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.data-table thead th {
+    background: #f8fafc;
+    padding: 1rem 1rem;
+    font-weight: 600;
+    color: #334155;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+.data-table tbody td {
+    padding: 0.9rem 1rem;
+    color: #475569;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+.data-table tbody tr:hover {
+    background-color: #fef9f9;
+    transition: background 0.2s;
+}
+
+/* Badge de roles */
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 40px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    width: fit-content;
+}
+.role-badge.admin {
+    background: #fee2e2;
+    color: #8B0000;
+}
+.role-badge.user {
+    background: #e0e7ff;
+    color: #1e3a8a;
+}
+
+/* Selector de rol inline (estilizado) */
+.role-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.role-select {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 30px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.role-select:focus {
+    outline: none;
+    border-color: #8B0000;
+    box-shadow: 0 0 0 2px rgba(139,0,0,0.1);
+}
+.btn-update-role {
+    background: #f1f5f9;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 30px;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-update-role:hover {
+    background: #8B0000;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Botones de acción (editar/eliminar) */
+.action-btns {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+.action-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+.action-edit {
+    background: #eff6ff;
+    color: #2563eb;
+}
+.action-edit:hover {
+    background: #dbeafe;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+.action-delete {
+    background: #fef2f2;
+    color: #dc2626;
+}
+.action-delete:hover {
+    background: #fee2e2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+/* ============================================
+   FORMULARIO DE BÚSQUEDA
+   ============================================ */
+.search-form {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.search-input {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+.search-input:focus {
+    outline: none;
+    border-color: #8B0000;
+    box-shadow: 0 0 0 2px rgba(139,0,0,0.1);
+}
+.search-btn, .clear-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.search-btn {
+    background: #8B0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.search-btn:hover {
+    background: #4A0404;
+    transform: translateY(-1px);
+}
+.clear-btn {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+}
+.clear-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* ============================================
+   PAGINACIÓN
+   ============================================ */
+.pagination {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+.pagination .page-link {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 30px;
+    color: #475569;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+.pagination .page-link:hover {
+    background: #8B0000;
+    color: white;
+    border-color: #8B0000;
+}
+.pagination .active .page-link {
+    background: #8B0000;
+    color: white;
+    border-color: #8B0000;
+}
+.pagination .disabled .page-link {
+    color: #cbd5e1;
+    pointer-events: none;
+}
+
+/* ============================================
+   FORMULARIO DE USUARIO (crear/editar)
+   ============================================ */
+.user-form-card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.form-group-modern {
+    margin-bottom: 1.2rem;
+}
+.form-label-modern {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.4rem;
+}
+.form-control-modern {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+.form-control-modern:focus {
+    outline: none;
+    border-color: #8B0000;
+    box-shadow: 0 0 0 3px rgba(139,0,0,0.1);
+}
+.required {
+    color: #dc2626;
+    margin-left: 0.2rem;
+}
+.field-error {
+    color: #dc2626;
+    font-size: 0.7rem;
+    margin-top: 0.3rem;
+}
+.field-hint {
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin-top: 0.3rem;
+}
+
+/* Checkbox cambiar contraseña */
+.change-password-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+.change-password-toggle input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* ============================================
+   BOTONES PRINCIPALES
+   ============================================ */
+.btn-primary-admin {
+    background: linear-gradient(135deg, #8B0000, #6B0000);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.btn-primary-admin:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(139,0,0,0.25);
+}
+.btn-secondary-admin {
+    background: #f1f5f9;
+    color: #1f2937;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: 1px solid #e2e8f0;
+}
+.btn-secondary-admin:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   ALERTAS
+   ============================================ */
+.alert-admin {
+    padding: 0.8rem 1.2rem;
+    border-radius: 14px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.alert-success-admin {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+.alert-danger-admin {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .data-table thead th,
+    .data-table tbody td {
+        padding: 0.7rem;
+    }
+    .action-btns {
+        gap: 0.3rem;
+    }
+    .search-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-input, .search-btn, .clear-btn {
+        width: 100%;
+        text-align: center;
+    }
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

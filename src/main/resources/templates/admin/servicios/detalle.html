@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${servicio.titulo} + ' - Detalle del Servicio'">Detalle del Servicio - Grupo BM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-servicios.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <!-- Sidebar -->
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content">
+        <!-- Header -->
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+
+        <div class="content-container">
+            
+            <!-- Header de la página -->
+            <div class="detail-header">
+                <div>
+                    <h1 class="detail-title">
+                        <i class="fas fa-info-circle me-2" style="color:#8B0000;"></i>
+                        Detalle del Servicio
+                    </h1>
+                    <p class="detail-subtitle">Información completa del servicio seleccionado</p>
+                </div>
+                <a th:href="@{/admin/servicios}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Volver al listado
+                </a>
+            </div>
+
+            <!-- Información general -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <i class="fas fa-cogs"></i>
+                    <h3>Información General</h3>
+                </div>
+                <div class="detail-card-body">
+                    <div class="info-row">
+                        <div class="info-label">ID:</div>
+                        <div class="info-value" th:text="${servicio.id}">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Título:</div>
+                        <div class="info-value" th:text="${servicio.titulo}">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Descripción:</div>
+                        <div class="info-value" th:text="${servicio.descripcion}">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Mensaje adicional:</div>
+                        <div class="info-value" th:text="${servicio.mensaje != null ? servicio.mensaje : 'No especificado'}">-</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Estado:</div>
+                        <div class="info-value">
+                            <span th:if="${servicio.activo}" class="detail-status active">
+                                <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Activo
+                            </span>
+                            <span th:unless="${servicio.activo}" class="detail-status inactive">
+                                <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Inactivo
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Características -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <i class="fas fa-list-ul"></i>
+                    <h3>Características del Servicio</h3>
+                </div>
+                <div class="detail-card-body">
+                    <ul class="caracteristicas-list" th:if="${not #lists.isEmpty(servicio.caracteristicasList)}">
+                        <li th:each="carac : ${servicio.caracteristicasList}">
+                            <i class="fas fa-check-circle"></i>
+                            <span th:text="${carac}"></span>
+                        </li>
+                    </ul>
+                    <p th:unless="${not #lists.isEmpty(servicio.caracteristicasList)}" class="text-gray-400 italic">
+                        No se han registrado características para este servicio.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Imágenes (Galería) -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <i class="fas fa-images"></i>
+                    <h3>Galería de Imágenes</h3>
+                </div>
+                <div class="detail-card-body">
+                    <div th:if="${not #lists.isEmpty(servicio.imagenesList)}" class="gallery-grid">
+                        <div th:each="img : ${servicio.imagenesList}" class="gallery-item">
+                            <img th:src="${img}" alt="Imagen del servicio" onerror="this.src='https://via.placeholder.com/200x160?text=Error+de+carga'">
+                        </div>
+                    </div>
+                    <p th:unless="${not #lists.isEmpty(servicio.imagenesList)}" class="text-gray-400 italic">
+                        No hay imágenes asociadas a este servicio.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Acciones adicionales -->
+            <div class="flex gap-3 mt-6">
+                <a th:href="@{/admin/servicios/editar/{id}(id=${servicio.id})}" class="btn-primary-admin">
+                    <i class="fas fa-edit"></i> Editar servicio
+                </a>
+                <button onclick="history.back()" class="btn-secondary-admin">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/admin.js}"></script>
+<script th:src="@{/js/admin-servicios-detalle.js}"></script>
+</body>
+</html>

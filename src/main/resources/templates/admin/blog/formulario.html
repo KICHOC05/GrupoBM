@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">Formulario Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-galeria.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <div class="main-content">
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+        <div class="content-container">
+            <div class="page-header">
+                <h1 class="page-title" th:text="${titulo}">Artículo</h1>
+                <a th:href="@{/admin/blogs}" class="btn-secondary-admin"><i class="fas fa-arrow-left"></i> Volver</a>
+            </div>
+            <form method="post" enctype="multipart/form-data" th:action="@{/admin/blogs/guardar}" class="card-modern">
+                <input type="hidden" name="id" th:value="${articuloDTO.id}">
+                <div class="card-body-modern space-y-5">
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Título</label>
+                        <input type="text" name="titulo" th:value="${articuloDTO.titulo}" class="form-control-modern" required>
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Resumen (breve descripción para tarjetas)</label>
+                        <textarea name="resumen" class="form-control-modern" rows="2" required th:text="${articuloDTO.resumen}"></textarea>
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Contenido completo (HTML)</label>
+                        <textarea name="contenido" class="form-control-modern" rows="10" required th:text="${articuloDTO.contenido}"></textarea>
+                        <p class="field-hint">Puedes usar etiquetas HTML para dar formato.</p>
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Categoría</label>
+                        <input type="text" name="categoria" th:value="${articuloDTO.categoria}" class="form-control-modern" placeholder="Cortinas, Corte CNC, Mantenimiento, Industria">
+                    </div>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2"><input type="checkbox" name="destacado" th:checked="${articuloDTO.destacado}" class="form-checkbox"> <span>Destacar artículo</span></label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="activo" th:checked="${articuloDTO.activo}" class="form-checkbox"> <span>Activo (visible en el sitio)</span></label>
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Imagen de portada</label>
+                        <div th:if="${articuloDTO.imagenPortada != null}" class="mb-3"><p class="text-sm text-gray-600">Imagen actual:</p><img th:src="${articuloDTO.imagenPortada}" class="h-20 w-auto mt-1" alt="Portada"></div>
+                        <div id="uploadZone" class="upload-zone"><i class="fas fa-cloud-upload-alt"></i><div class="upload-zone-text">Arrastra y suelta la imagen</div><div class="upload-zone-hint">o haz clic para seleccionar</div></div>
+                        <input type="file" name="imagenFile" id="imagenFile" accept="image/*" style="display:none;" th:required="${articuloDTO.id == null}">
+                        <div id="previewContainer"></div>
+                        <p class="field-hint mt-2">Dejar en blanco para mantener la imagen actual.</p>
+                    </div>
+                    <div class="flex gap-2 pt-4">
+                        <button type="submit" class="btn-primary-admin">Guardar</button>
+                        <a th:href="@{/admin/blogs}" class="btn-secondary-admin">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/admin.js}"></script>
+<script th:src="@{/js/admin-galeria.js}"></script>
+<script>
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('imagenFile');
+    const previewContainer = document.getElementById('previewContainer');
+    if (uploadZone && fileInput) {
+        uploadZone.addEventListener('click', () => fileInput.click());
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => uploadZone.addEventListener(ev, (e) => e.preventDefault()));
+        uploadZone.addEventListener('dragover', () => uploadZone.classList.add('drag-over'));
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                const changeEvent = new Event('change', { bubbles: true });
+                fileInput.dispatchEvent(changeEvent);
+            }
+        });
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                previewContainer.innerHTML = `<div class="preview-container"><img src="${ev.target.result}" class="preview-image"><div class="text-center text-xs text-gray-500 mt-1">${file.name}</div></div>`;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
+</body>
+</html>

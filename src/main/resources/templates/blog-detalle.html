@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${articulo.titulo} + ' - Grupo BM'">Artículo - Grupo BM</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Estilos propios del blog -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/blog.css}">
+    <link rel="stylesheet" th:href="@{/css/blog-detalle.css}">
+</head>
+<body class="blog-detalle-page">
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="content-wrapper">
+    <section class="detail-section">
+        <div class="container py-4">
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="breadcrumb-custom" data-aos="fade-up">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/blog}">Blog</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" th:text="${articulo.titulo}">Detalle</li>
+                </ol>
+            </nav>
+
+            <!-- Mensaje si no hay artículo -->
+            <div th:if="${articulo == null}" class="alert alert-warning" data-aos="fade-up">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                El artículo solicitado no existe o ha sido eliminado.
+                <a th:href="@{/blog}" class="alert-link">Volver al blog</a>
+            </div>
+
+            <!-- Contenido principal -->
+            <div th:if="${articulo != null}">
+
+                <!-- Cabecera del artículo -->
+                <div class="article-header" data-aos="fade-up">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="article-category" th:text="${articulo.categoria}">Cortinas</span>
+                        <span th:if="${articulo.destacado}" class="featured-badge" data-aos="zoom-in">
+                            <i class="fas fa-star me-1"></i>Destacado
+                        </span>
+                    </div>
+                    <h1 class="article-title" th:text="${articulo.titulo}">Título del artículo</h1>
+                    <div class="article-meta">
+                        <div class="article-meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>Grupo BM</span>
+                        </div>
+                        <div class="article-meta-item">
+                            <i class="far fa-clock"></i>
+                            <span id="readingTime">Calculando tiempo de lectura...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Imagen principal -->
+                <div class="row" data-aos="fade-up">
+                    <div class="col-12">
+                        <img th:src="${articulo.imagenPortada}"
+                             alt="Imagen principal"
+                             class="article-hero-image"
+                             onerror="this.src='https://via.placeholder.com/1200x600?text=Imagen+no+disponible'">
+                    </div>
+                </div>
+
+                <!-- Contenido + Sidebar (con separación g-4) -->
+                <div class="row g-4">
+                    <!-- Contenido principal -->
+                    <div class="col-lg-8" data-aos="fade-up">
+                        <div class="article-content" id="articleContent">
+                            <div th:if="${articulo.contenido != null}" th:utext="${articulo.contenido}">
+                                Contenido del artículo.
+                            </div>
+                            <div th:if="${articulo.contenido == null}">
+                                <p class="text-muted">No hay contenido disponible para este artículo.</p>
+                            </div>
+                        </div>
+
+                        <!-- Compartir en redes sociales -->
+                        <div class="share-section mt-5" data-aos="fade-up">
+                            <h5 class="share-title">Compartir este artículo</h5>
+                            <div class="social-share">
+                                <a href="#" class="social-share-btn share-facebook" data-share="facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-share-btn share-twitter" data-share="twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-share-btn share-whatsapp" data-share="whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <a href="#" class="social-share-btn share-linkedin" data-share="linkedin">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                        <!-- Artículos relacionados -->
+                        <div class="sidebar-card" th:if="${articulosRelacionados != null and not #lists.isEmpty(articulosRelacionados)}">
+                            <h4 class="sidebar-title">
+                                <i class="fas fa-newspaper me-2"></i>
+                                Artículos relacionados
+                            </h4>
+                            <div th:each="rel : ${articulosRelacionados}" class="related-article-item">
+                                <a th:href="@{/blog/{id}/{slug}(id=${rel.id}, slug=${#strings.replace(rel.titulo, ' ', '-')})}" class="related-article-link">
+                                    <img th:src="${rel.imagenPortada}" alt="Imagen" class="related-article-img"
+                                         onerror="this.src='https://via.placeholder.com/80x80?text=No+img'">
+                                    <div>
+                                        <h5 class="related-article-title" th:text="${rel.titulo}">Título</h5>
+                                        <div class="related-article-meta">
+                                            <i class="fas fa-user"></i> Grupo BM
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Información de contacto -->
+                        <div class="sidebar-card">
+                            <h4 class="sidebar-title">
+                                <i class="fas fa-headset me-2"></i>
+                                ¿Necesitas asesoría?
+                            </h4>
+                            <p>Nuestros especialistas están listos para ayudarte a elegir la mejor solución para tu negocio.</p>
+                            <a th:href="@{/#contacto}" class="btn-contacto w-100">
+                                <i class="fas fa-phone me-2"></i>Contáctanos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navegación entre artículos -->
+                <div class="article-navigation" data-aos="fade-up">
+                    <a th:href="@{/blog}" class="btn-return">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al blog
+                    </a>
+                    <div class="nav-buttons">
+                        <a th:href="@{/blog/{id}/{slug}(id=${anteriorId}, slug=${#strings.replace(anteriorTitulo, ' ', '-')})}" 
+                           class="btn-nav" th:if="${anteriorId != null}">
+                            <i class="fas fa-chevron-left me-2"></i>Anterior
+                        </a>
+                        <a th:href="@{/blog/{id}/{slug}(id=${siguienteId}, slug=${#strings.replace(siguienteTitulo, ' ', '-')})}" 
+                           class="btn-nav" th:if="${siguienteId != null}">
+                            Siguiente<i class="fas fa-chevron-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sección adicional de artículos relacionados (grid) -->
+                <div th:if="${articulosRelacionados != null and not #lists.isEmpty(articulosRelacionados)}" 
+                     class="related-articles-grid mt-5" data-aos="fade-up">
+                    <h3 class="h4 fw-bold mb-4">Más artículos que te pueden interesar</h3>
+                    <div class="row g-4">
+                        <div th:each="rel : ${articulosRelacionados}" class="col-md-4">
+                            <div class="related-card">
+                                <img th:src="${rel.imagenPortada}" class="related-card-img" alt="Imagen"
+                                     onerror="this.src='https://via.placeholder.com/400x250?text=Imagen'">
+                                <div class="related-card-body">
+                                    <span class="related-card-category" th:text="${rel.categoria}">Categoría</span>
+                                    <h5 class="related-card-title" th:text="${rel.titulo}">Título</h5>
+                                    <a th:href="@{/blog/{id}/{slug}(id=${rel.id}, slug=${#strings.replace(rel.titulo, ' ', '-')})}" 
+                                       class="related-card-link">Leer más <i class="fas fa-arrow-right ms-1"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- fin if articulo != null -->
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/blog.js}"></script>
+<script th:src="@{/js/blog-detalle.js}"></script>
+</body>
+</html>

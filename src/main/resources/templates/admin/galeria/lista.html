@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Galería - Admin Grupo BM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-galeria.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <div class="main-content">
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+        <div class="content-container">
+            <!-- Cabecera -->
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Galería de Imágenes</h1>
+                    <p class="page-subtitle">Administra las imágenes que se muestran en el sitio web</p>
+                </div>
+                <a th:href="@{/admin/galeria/nuevo}" class="btn-primary-admin">
+                    <i class="fas fa-plus"></i> Nueva Imagen
+                </a>
+            </div>
+
+            <!-- Alertas -->
+            <div th:if="${exito}" class="alert-admin alert-success-admin" th:text="${exito}"></div>
+            <div th:if="${error}" class="alert-admin alert-danger-admin" th:text="${error}"></div>
+
+            <!-- Grid de imágenes mejorado -->
+            <div class="galeria-grid">
+                <div th:each="img : ${galeriaList}" class="galeria-card">
+                    <div class="galeria-img-wrapper">
+                        <img th:src="${img.imagenUrl}" class="galeria-img" 
+                             alt="Imagen de galería"
+                             onerror="this.src='https://via.placeholder.com/400x300?text=Error+de+carga'">
+                        <div class="galeria-overlay">
+                            <a th:href="@{/admin/galeria/editar/{id}(id=${img.id})}" class="btn-overlay edit">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <form th:action="@{/admin/galeria/eliminar/{id}(id=${img.id})}" method="post" style="display:inline;">
+                                <button type="submit" class="btn-overlay delete" onclick="return confirm('¿Eliminar esta imagen permanentemente?')">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="galeria-desc" th:text="${img.descripcion}">Descripción de la imagen</div>
+                </div>
+                <!-- Mensaje si no hay imágenes -->
+                <div th:if="${#lists.isEmpty(galeriaList)}" class="text-center py-10 text-gray-500 col-span-full">
+                    <i class="fas fa-images text-5xl mb-3 block"></i>
+                    <p>No hay imágenes en la galería.</p>
+                    <a th:href="@{/admin/galeria/nuevo}" class="btn-primary-admin mt-3 inline-block">Subir primera imagen</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/admin.js}"></script>
+<script th:src="@{/js/admin-galeria.js}"></script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo} + ' - Servicios'">Servicios - Admin Grupo BM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-servicios.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content">
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+
+        <div class="content-container">
+            
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h1 class="page-title" th:text="${titulo}">Nuevo Servicio</h1>
+                    <p class="page-subtitle">Completa todos los campos para el servicio</p>
+                </div>
+                <a th:href="@{/admin/servicios}" class="btn-secondary-admin">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+
+            <!-- Formulario -->
+            <form id="servicioForm" class="card-modern" enctype="multipart/form-data">
+                <input type="hidden" id="id" name="id" th:value="${servicioDTO.id}">
+                <input type="hidden" id="imagenesEliminar" name="imagenesEliminar" value="">
+                
+                <div class="card-body-modern">
+                    <div class="form-grid">
+                        <!-- Columna Principal -->
+                        <div class="form-col-main">
+                            <!-- Título -->
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">
+                                    Título del Servicio <span class="required">*</span>
+                                </label>
+                                <div class="input-icon-modern">
+                                    <i class="fas fa-tag"></i>
+                                    <input type="text" id="titulo" name="titulo" 
+                                           class="form-control-modern" 
+                                           th:value="${servicioDTO.titulo}"
+                                           placeholder="Ej: Fabricación de Tira" required>
+                                </div>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Descripción</label>
+                                <textarea id="descripcion" name="descripcion" 
+                                          class="form-control-modern" rows="4"
+                                          placeholder="Describe el servicio en detalle...">[[${servicioDTO.descripcion}]]</textarea>
+                            </div>
+
+                            <!-- Mensaje adicional -->
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Mensaje Adicional</label>
+                                <input type="text" id="mensaje" name="mensaje" 
+                                       class="form-control-modern" 
+                                       th:value="${servicioDTO.mensaje}"
+                                       placeholder="Ej: Precio especial para ferreteros">
+                                <p class="field-hint">Texto que aparecerá junto al botón de cotización</p>
+                            </div>
+
+                            <!-- Características: SOLO FRASES COMPLETAS -->
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">
+                                    Características del Servicio
+                                </label>
+
+                                <!-- Campo para agregar una nueva característica (frase) -->
+                                <div class="mb-3">
+                                    <div class="flex gap-2">
+                                        <textarea id="nuevaCaracteristica" 
+                                                  class="form-control-modern" 
+                                                  rows="2" 
+                                                  placeholder="Escribe una frase (puede contener comas)&#10;Ej: Tira plana, europea, perforada, panorámica, tipo Grille y tubular"></textarea>
+                                        <button type="button" id="btnAgregarCaracteristica" class="btn-primary-admin" style="white-space: nowrap; height: fit-content;">
+                                            <i class="fas fa-plus"></i> Agregar
+                                        </button>
+                                    </div>
+                                    <p class="field-hint text-xs mt-1">La frase completa se guardará como una sola característica (se respetan comas y puntuación).</p>
+                                </div>
+
+                                <!-- Lista de características existentes (con scroll) -->
+                                <div id="caracteristicasContainer" style="max-height: 320px; overflow-y: auto; padding-right: 6px;">
+                                    <!-- Iteración de características existentes -->
+                                    <div th:each="carac, iterStat : ${servicioDTO.caracteristicasList}" 
+                                         class="carac-row">
+                                        <div class="carac-number" th:text="${iterStat.index + 1}">1</div>
+                                        <input type="text" name="caracteristicasList" 
+                                               class="form-control-admin" 
+                                               th:value="${carac}"
+                                               placeholder="Característica"
+                                               style="flex:1;">
+                                        <button type="button" class="btn-remove-carac" onclick="eliminarCaracteristica(this)">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <p class="field-hint mt-2">
+                                    <i class="fas fa-info-circle"></i> Cada característica es una frase independiente. Puedes eliminarlas usando la papelera.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Columna Lateral -->
+                        <div class="form-col-side">
+                            <!-- Estado Activo -->
+                            <div class="card-modern" style="margin-bottom:20px;">
+                                <div class="card-header-modern">
+                                    <i class="fas fa-toggle-on"></i>
+                                    <h3>Estado</h3>
+                                </div>
+                                <div class="card-body-modern">
+                                    <div class="toggle-row">
+                                        <div>
+                                            <div class="toggle-label">Servicio Activo</div>
+                                            <div class="toggle-hint">Mostrar en el sitio web</div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="activo" name="activo" 
+                                                   th:checked="${servicioDTO.activo}">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Subida de Imágenes -->
+                            <div class="card-modern">
+                                <div class="card-header-modern">
+                                    <i class="fas fa-images"></i>
+                                    <h3>Imágenes del Servicio</h3>
+                                </div>
+                                <div class="card-body-modern">
+                                    <!-- Imágenes actuales -->
+                                    <div th:if="${not #lists.isEmpty(servicioDTO.imagenesList)}">
+                                        <label class="form-label-modern">Imágenes Actuales</label>
+                                        <div class="imagenes-actuales-grid" id="imagenesActualesGrid">
+                                            <div th:each="img, iterStat : ${servicioDTO.imagenesList}" 
+                                                 class="imagen-actual-item">
+                                                <img th:src="${img}" class="imagen-actual-thumb" alt="Imagen">
+                                                <button type="button" class="btn-remove-img" 
+                                                        th:data-img="${img}"
+                                                        onclick="eliminarImagenExistente('${img}', this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="field-hint">
+                                            <i class="fas fa-info-circle"></i> Haz clic en la X para eliminar imágenes
+                                        </div>
+                                    </div>
+
+                                    <!-- Zona de subida -->
+                                    <div class="mt-4">
+                                        <label class="form-label-modern">Subir Nuevas Imágenes</label>
+                                        <div id="dropZone" class="upload-zone">
+                                            <i class="fas fa-cloud-upload-alt upload-zone-icon"></i>
+                                            <div class="upload-zone-text">Arrastra y suelta tus imágenes</div>
+                                            <div class="upload-zone-hint">o haz clic para seleccionar</div>
+                                            <div class="upload-zone-formats">JPG, PNG, WEBP, GIF hasta 50MB</div>
+                                        </div>
+                                        <input type="file" id="imagenesFile" name="imagenesFile" 
+                                               multiple accept="image/jpeg,image/png,image/webp,image/gif" 
+                                               style="display:none;">
+                                    </div>
+
+                                    <!-- Previews de nuevas imágenes -->
+                                    <div class="mt-4">
+                                        <label class="form-label-modern">Previsualización</label>
+                                        <div id="nuevasPreviews" class="nuevas-preview-grid">
+                                            <p class="text-gray-400 text-sm">No hay imágenes seleccionadas</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="form-actions">
+                        <a th:href="@{/admin/servicios}" class="btn-secondary-admin">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn-modern">
+                            <i class="fas fa-save"></i> Guardar Servicio
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/admin.js}"></script>
+<script th:src="@{/js/admin-servicios-form.js}"></script>
+</body>
+</html>

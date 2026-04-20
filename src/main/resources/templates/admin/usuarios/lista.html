@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios - Admin Grupo BM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+	<link rel="stylesheet" th:href="@{/css/admin-usuarios.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <div class="main-content">
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+        <div class="content-container">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Usuarios</h1>
+                    <p class="page-subtitle">Administra los usuarios del sistema</p>
+                </div>
+                <a th:href="@{/admin/usuarios/nuevo}" class="btn-primary-admin">
+                    <i class="fas fa-plus"></i> Nuevo Usuario
+                </a>
+            </div>
+
+            <div th:if="${exito}" class="alert-admin alert-success-admin" th:text="${exito}"></div>
+            <div th:if="${error}" class="alert-admin alert-danger-admin" th:text="${error}"></div>
+
+            <!-- Búsqueda -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="get" class="flex gap-2">
+                        <input type="text" name="busqueda" placeholder="Buscar por nombre o email..." 
+                               class="form-control-modern flex-1" th:value="${busqueda}">
+                        <button type="submit" class="btn-primary-admin"><i class="fas fa-search"></i> Buscar</button>
+                        <a th:href="@{/admin/usuarios}" class="btn-secondary-admin">Limpiar</a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabla -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Lista de Usuarios</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Rol</th>
+                                    <th>Fecha Registro</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(usuarios)}">
+                                    <td colspan="7" class="text-center py-4">No hay usuarios registrados</td>
+                                </tr>
+                                <tr th:each="u : ${usuarios}">
+                                    <td th:text="${u.id}"></td>
+                                    <td th:text="${u.nombre + ' ' + u.apellido}"></td>
+                                    <td th:text="${u.email}"></td>
+                                    <td th:text="${u.telefono != null ? u.telefono : '-'}"></td>
+                                    <td>
+                                        <form th:action="@{/admin/usuarios/cambiar-rol/{id}(id=${u.id})}" method="post" class="flex items-center gap-1">
+                                            <select name="rol" class="text-sm border rounded px-1 py-0.5" style="font-size:0.7rem;">
+                                                <option value="ROLE_USER" th:selected="${u.rol == 'ROLE_USER'}">Usuario</option>
+                                                <option value="ROLE_ADMIN" th:selected="${u.rol == 'ROLE_ADMIN'}">Administrador</option>
+                                            </select>
+                                            <button type="submit" class="text-blue-600 hover:text-blue-800" title="Cambiar rol">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td th:text="${#dates.format(u.createdAt, 'dd/MM/yyyy')}"></td>
+                                    <td class="action-btns">
+                                        <a th:href="@{/admin/usuarios/editar/{id}(id=${u.id})}" class="action-btn action-edit" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form th:action="@{/admin/usuarios/eliminar/{id}(id=${u.id})}" method="post" style="display:inline;" onsubmit="return confirm('¿Eliminar este usuario permanentemente?')">
+                                            <button type="submit" class="action-btn action-delete" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paginación -->
+            <div th:if="${totalPages > 1}" class="flex justify-center mt-4">
+                <nav>
+                    <ul class="pagination">
+                        <li th:class="${currentPage == 1} ? 'page-item disabled' : 'page-item'">
+                            <a th:href="@{/admin/usuarios(page=${currentPage - 1}, size=10, busqueda=${busqueda})}" class="page-link">Anterior</a>
+                        </li>
+                        <li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${i == currentPage} ? 'page-item active' : 'page-item'">
+                            <a th:href="@{/admin/usuarios(page=${i}, size=10, busqueda=${busqueda})}" class="page-link" th:text="${i}"></a>
+                        </li>
+                        <li th:class="${currentPage == totalPages} ? 'page-item disabled' : 'page-item'">
+                            <a th:href="@{/admin/usuarios(page=${currentPage + 1}, size=10, busqueda=${busqueda})}" class="page-link">Siguiente</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

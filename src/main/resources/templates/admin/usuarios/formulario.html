@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo} + ' - Usuarios'">Formulario Usuario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+	<link rel="stylesheet" th:href="@{/css/admin-usuarios.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <div class="main-content">
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+        <div class="content-container">
+            <div class="page-header">
+                <h1 class="page-title" th:text="${titulo}">Usuario</h1>
+                <a th:href="@{/admin/usuarios}" class="btn-secondary-admin"><i class="fas fa-arrow-left"></i> Volver</a>
+            </div>
+
+            <form method="post" th:action="@{/admin/usuarios/guardar}" th:object="${usuarioDTO}" class="card-modern max-w-2xl mx-auto">
+                <input type="hidden" th:field="*{id}">
+                <div class="card-body-modern space-y-4">
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Nombre <span class="required">*</span></label>
+                        <input type="text" th:field="*{nombre}" class="form-control-modern" required>
+                        <p th:if="${#fields.hasErrors('nombre')}" class="field-error" th:errors="*{nombre}"></p>
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Apellido <span class="required">*</span></label>
+                        <input type="text" th:field="*{apellido}" class="form-control-modern" required>
+                        <p th:if="${#fields.hasErrors('apellido')}" class="field-error" th:errors="*{apellido}"></p>
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Email <span class="required">*</span></label>
+                        <input type="email" th:field="*{email}" class="form-control-modern" required>
+                        <p th:if="${#fields.hasErrors('email')}" class="field-error" th:errors="*{email}"></p>
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Teléfono</label>
+                        <input type="tel" th:field="*{telefono}" class="form-control-modern">
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Dirección</label>
+                        <input type="text" th:field="*{direccion}" class="form-control-modern">
+                    </div>
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Rol</label>
+                        <select th:field="*{rol}" class="form-control-modern">
+                            <option value="ROLE_USER">Usuario</option>
+                            <option value="ROLE_ADMIN">Administrador</option>
+                        </select>
+                    </div>
+
+                    <!-- Contraseña solo para nuevos usuarios -->
+                    <div th:if="${usuarioDTO.id == 0}">
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Contraseña <span class="required">*</span></label>
+                            <input type="password" th:field="*{contrasena}" class="form-control-modern" required>
+                            <p th:if="${#fields.hasErrors('contrasena')}" class="field-error" th:errors="*{contrasena}"></p>
+                        </div>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Confirmar contraseña <span class="required">*</span></label>
+                            <input type="password" th:field="*{confirmarContrasena}" class="form-control-modern" required>
+                            <p th:if="${#fields.hasErrors('confirmarContrasena')}" class="field-error" th:errors="*{confirmarContrasena}"></p>
+                        </div>
+                    </div>
+
+                    <!-- Opción cambiar contraseña para edición -->
+                    <div th:if="${usuarioDTO.id > 0}">
+                        <div class="form-group-modern">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" id="cambiarContrasena" name="cambiarContrasena" value="true" class="form-checkbox">
+                                <span>Cambiar contraseña</span>
+                            </label>
+                        </div>
+                        <div id="passwordFields" style="display: none;">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Nueva contraseña</label>
+                                <input type="password" th:field="*{contrasena}" class="form-control-modern">
+                                <p th:if="${#fields.hasErrors('contrasena')}" class="field-error" th:errors="*{contrasena}"></p>
+                            </div>
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Confirmar nueva contraseña</label>
+                                <input type="password" th:field="*{confirmarContrasena}" class="form-control-modern">
+                                <p th:if="${#fields.hasErrors('confirmarContrasena')}" class="field-error" th:errors="*{confirmarContrasena}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 pt-4">
+                        <button type="submit" class="btn-primary-admin">Guardar</button>
+                        <a th:href="@{/admin/usuarios}" class="btn-secondary-admin">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/admin.js}"></script>
+<script>
+    document.getElementById('cambiarContrasena')?.addEventListener('change', function() {
+        document.getElementById('passwordFields').style.display = this.checked ? 'block' : 'none';
+        // Limpiar campos cuando se oculta (opcional)
+        if (!this.checked) {
+            document.querySelectorAll('#passwordFields input').forEach(input => input.value = '');
+        }
+    });
+</script>
+</body>
+</html>

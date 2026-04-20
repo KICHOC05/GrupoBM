@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Contenido - Admin Grupo BM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-galeria.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <div class="main-content">
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+        <div class="content-container">
+            <div class="page-header">
+                <h1 class="page-title">Editar Contenido de la Página Principal</h1>
+                <a th:href="@{/admin/dashboard}" class="btn-secondary-admin"><i class="fas fa-arrow-left"></i> Volver</a>
+            </div>
+
+            <div th:if="${exito}" class="alert-admin alert-success-admin" th:text="${exito}"></div>
+            <div th:if="${error}" class="alert-admin alert-danger-admin" th:text="${error}"></div>
+
+            <form method="post" enctype="multipart/form-data" th:action="@{/admin/contenido/guardar}" class="card-modern">
+                <div class="card-body-modern space-y-5">
+
+                    <!-- ========= SECCIÓN HERO ========= -->
+                    <div class="border-b pb-4 mb-2">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Sección Hero (Portada)</h3>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Título (acepta HTML, ej. &lt;br&gt;)</label>
+                            <textarea name="heroTitulo" class="form-control-modern" rows="3" required th:text="${contenidoDTO.heroTitulo}"></textarea>
+                        </div>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Subtítulo / Descripción</label>
+                            <textarea name="heroSubtitulo" class="form-control-modern" rows="4" required th:text="${contenidoDTO.heroSubtitulo}"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- ========= SECCIÓN NOSOTROS ========= -->
+                    <div class="border-b pb-4 mb-2">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">Sección "Nosotros"</h3>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Título</label>
+                            <input type="text" name="nosotrosTitulo" th:value="${contenidoDTO.nosotrosTitulo}" class="form-control-modern" required>
+                        </div>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Párrafo 1 (puede incluir &lt;strong&gt;)</label>
+                            <textarea name="nosotrosParrafo1" class="form-control-modern" rows="2" required th:text="${contenidoDTO.nosotrosParrafo1}"></textarea>
+                        </div>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Párrafo 2</label>
+                            <textarea name="nosotrosParrafo2" class="form-control-modern" rows="2" required th:text="${contenidoDTO.nosotrosParrafo2}"></textarea>
+                        </div>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Párrafo 3</label>
+                            <textarea name="nosotrosParrafo3" class="form-control-modern" rows="2" required th:text="${contenidoDTO.nosotrosParrafo3}"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- ========= LOGO ========= -->
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Logo del sitio</label>
+                        <div th:if="${logoActual}" class="mb-3">
+                            <p class="text-sm text-gray-600">Logo actual:</p>
+                            <img th:src="${logoActual}" class="h-16 w-auto mt-1" alt="Logo actual">
+                        </div>
+                        <div id="uploadZone" class="upload-zone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div class="upload-zone-text">Arrastra y suelta el nuevo logo</div>
+                            <div class="upload-zone-hint">o haz clic para seleccionar</div>
+                            <div class="upload-zone-hint text-xs">JPG, PNG, GIF, WEBP hasta 50MB</div>
+                        </div>
+                        <input type="file" name="logoFile" id="logoFile" accept="image/*" style="display:none;">
+                        <div id="previewContainer"></div>
+                        <p class="field-hint mt-2">Dejar en blanco para mantener el logo actual.</p>
+                    </div>
+
+                    <div class="flex gap-2 pt-4">
+                        <button type="submit" class="btn-primary-admin">Guardar Cambios</button>
+                        <a th:href="@{/admin/dashboard}" class="btn-secondary-admin">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/admin.js}"></script>
+<script th:src="@{/js/admin-galeria.js}"></script>
+<script>
+    // Drag & drop y previsualización para el logo
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('logoFile');
+    const previewContainer = document.getElementById('previewContainer');
+
+    if (uploadZone && fileInput) {
+        uploadZone.addEventListener('click', () => fileInput.click());
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => uploadZone.addEventListener(ev, (e) => e.preventDefault()));
+        uploadZone.addEventListener('dragover', () => uploadZone.classList.add('drag-over'));
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                const changeEvent = new Event('change', { bubbles: true });
+                fileInput.dispatchEvent(changeEvent);
+            }
+        });
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                previewContainer.innerHTML = `<div class="preview-container"><img src="${ev.target.result}" class="preview-image"><div class="text-center text-xs text-gray-500 mt-1">${file.name}</div></div>`;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
+</body>
+</html>

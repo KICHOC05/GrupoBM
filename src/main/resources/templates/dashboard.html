@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo BM - Dashboard Administrativo</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- SweetAlert2 para notificaciones -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --azul-marino: #0B1F3A;
+            --amarillo-industrial: #FFC107;
+            --gris-metalico: #6C757D;
+            --blanco: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f4f6f9;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(135deg, var(--azul-marino) 0%, #1a3a5f 100%);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            color: white;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 5px 0 20px rgba(0,0,0,0.2);
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar .logo-area {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar .logo i {
+            color: var(--amarillo-industrial);
+        }
+
+        .sidebar.collapsed .logo span {
+            display: none;
+        }
+
+        .sidebar .menu {
+            padding: 20px 0;
+        }
+
+        .sidebar .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.8);
+            transition: all 0.3s;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar .menu-item:hover,
+        .sidebar .menu-item.active {
+            background: rgba(255,255,255,0.1);
+            color: var(--amarillo-industrial);
+            border-left-color: var(--amarillo-industrial);
+        }
+
+        .sidebar .menu-item i {
+            width: 20px;
+            font-size: 1.2rem;
+        }
+
+        .sidebar.collapsed .menu-item span {
+            display: none;
+        }
+
+        .sidebar .menu-item span {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            transition: all 0.3s;
+            min-height: 100vh;
+            background: #f4f6f9;
+        }
+
+        .main-content.expanded {
+            margin-left: 80px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--azul-marino);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-sidebar:hover {
+            color: var(--amarillo-industrial);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: var(--amarillo-industrial);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--azul-marino);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Cards */
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border-bottom: 3px solid var(--amarillo-industrial);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 193, 7, 0.2);
+        }
+
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .table thead th {
+            border-bottom: 2px solid var(--amarillo-industrial);
+            color: var(--azul-marino);
+            font-weight: 600;
+        }
+
+        .badge-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Buttons */
+        .btn-industrial {
+            background: var(--amarillo-industrial);
+            color: var(--azul-marino);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-industrial:hover {
+            background: #e0a800;
+            transform: scale(1.05);
+        }
+
+        .btn-outline-industrial {
+            border: 2px solid var(--amarillo-industrial);
+            color: var(--azul-marino);
+            background: transparent;
+            padding: 6px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-outline-industrial:hover {
+            background: var(--amarillo-industrial);
+            color: var(--azul-marino);
+        }
+
+        /* Modal */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+
+        .modal-header {
+            background: var(--azul-marino);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Form controls */
+        .form-control-modern {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+
+        .form-control-modern:focus {
+            border-color: var(--amarillo-industrial);
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25);
+            outline: none;
+        }
+
+        /* Content sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo-area">
+            <div class="logo">
+                <i class="fas fa-industry"></i>
+                <span>GRUPO BM</span>
+            </div>
+            <button class="toggle-sidebar text-white" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="menu">
+            <div class="menu-item active" onclick="showSection('dashboard')">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="menu-item" onclick="showSection('blog')">
+                <i class="fas fa-newspaper"></i>
+                <span>Blog de Noticias</span>
+            </div>
+            <div class="menu-item" onclick="showSection('paquetes')">
+                <i class="fas fa-box"></i>
+                <span>Paquetes</span>
+            </div>
+            <div class="menu-item" onclick="showSection('usuarios')">
+                <i class="fas fa-users"></i>
+                <span>Usuarios</span>
+            </div>
+            <div class="menu-item" onclick="showSection('configuracion')">
+                <i class="fas fa-cog"></i>
+                <span>Configuración</span>
+            </div>
+            <div class="menu-item" style="margin-top: 50px;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <button class="toggle-sidebar" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-info">
+                <span class="font-semibold">Admin Grupo BM</span>
+                <div class="user-avatar">A</div>
+            </div>
+        </div>
+
+        <div class="p-6">
+            <!-- Dashboard Section -->
+            <div class="content-section active" id="dashboard">
+                <h2 class="text-2xl font-bold text-[#0B1F3A] mb-6">Dashboard</h2>
+                
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Blog Posts</p>
+                                <h3 class="text-3xl font-bold" id="totalPosts">12</h3>
+                            </div>
+                            <i class="fas fa-newspaper text-4xl text-[#FFC107]"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Paquetes Activos</p>
+                                <h3 class="text-3xl font-bold" id="totalPaquetes">8</h3>
+                            </div>
+                            <i class="fas fa-box text-4xl text-[#FFC107]"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Usuarios</p>
+                                <h3 class="text-3xl font-bold">156</h3>
+                            </div>
+                            <i class="fas fa-users text-4xl text-[#FFC107]"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Visitas Hoy</p>
+                                <h3 class="text-3xl font-bold">2,345</h3>
+                            </div>
+                            <i class="fas fa-chart-line text-4xl text-[#FFC107]"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="table-container">
+                        <h3 class="text-lg font-bold text-[#0B1F3A] mb-4">Últimos Posts</h3>
+                        <div id="recentPostsList"></div>
+                    </div>
+                    <div class="table-container">
+                        <h3 class="text-lg font-bold text-[#0B1F3A] mb-4">Paquetes Recientes</h3>
+                        <div id="recentPaquetesList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Section -->
+            <div class="content-section" id="blog">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-[#0B1F3A]">Blog de Noticias</h2>
+                    <button class="btn-industrial" onclick="openBlogModal()">
+                        <i class="fas fa-plus mr-2"></i>Nuevo Post
+                    </button>
+                </div>
+
+                <!-- Blog Table -->
+                <div class="table-container">
+                    <table class="table w-full">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Categoría</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="blogTableBody">
+                            <!-- Se llena con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Paquetes Section -->
+            <div class="content-section" id="paquetes">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-[#0B1F3A]">Paquetes</h2>
+                    <button class="btn-industrial" onclick="openPaqueteModal()">
+                        <i class="fas fa-plus mr-2"></i>Nuevo Paquete
+                    </button>
+                </div>
+
+                <!-- Paquetes Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="paquetesGrid">
+                    <!-- Se llena con JavaScript -->
+                </div>
+            </div>
+
+            <!-- Otras secciones placeholder -->
+            <div class="content-section" id="usuarios">
+                <h2 class="text-2xl font-bold text-[#0B1F3A] mb-6">Usuarios</h2>
+                <div class="table-container">
+                    <p class="text-gray-500 text-center py-8">Módulo de usuarios en construcción</p>
+                </div>
+            </div>
+
+            <div class="content-section" id="configuracion">
+                <h2 class="text-2xl font-bold text-[#0B1F3A] mb-6">Configuración</h2>
+                <div class="table-container">
+                    <p class="text-gray-500 text-center py-8">Módulo de configuración en construcción</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Blog -->
+    <div class="modal fade" id="blogModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="blogModalTitle">Nuevo Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="blogForm">
+                        <input type="hidden" id="blogId">
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Título</label>
+                            <input type="text" class="form-control-modern w-full" id="blogTitulo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Categoría</label>
+                            <select class="form-control-modern w-full" id="blogCategoria" required>
+                                <option value="">Seleccionar</option>
+                                <option value="Noticias">Noticias</option>
+                                <option value="Proyectos">Proyectos</option>
+                                <option value="Consejos">Consejos</option>
+                                <option value="Industria">Industria</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Contenido</label>
+                            <textarea class="form-control-modern w-full" id="blogContenido" rows="5" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Imagen URL</label>
+                            <input type="url" class="form-control-modern w-full" id="blogImagen">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-industrial" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn-industrial" onclick="saveBlog()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Paquetes -->
+    <div class="modal fade" id="paqueteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paqueteModalTitle">Nuevo Paquete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="paqueteForm">
+                        <input type="hidden" id="paqueteId">
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Nombre</label>
+                            <input type="text" class="form-control-modern w-full" id="paqueteNombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Descripción</label>
+                            <textarea class="form-control-modern w-full" id="paqueteDescripcion" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Precio</label>
+                            <input type="number" class="form-control-modern w-full" id="paquetePrecio" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Estado</label>
+                            <select class="form-control-modern w-full" id="paqueteEstado" required>
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-industrial" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn-industrial" onclick="savePaquete()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // Inicializar AOS
+        AOS.init();
+
+        // Variables globales
+        let blogPosts = [
+            { id: 1, titulo: 'Nueva línea de cortinas industriales', categoria: 'Noticias', fecha: '2024-01-15', estado: 'Publicado', imagen: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e' },
+            { id: 2, titulo: 'Consejos para mantenimiento', categoria: 'Consejos', fecha: '2024-01-10', estado: 'Borrador', imagen: 'https://images.unsplash.com/photo-1581091226033-d5c48150dbaa' },
+            { id: 3, titulo: 'Proyecto en Monterrey', categoria: 'Proyectos', fecha: '2024-01-05', estado: 'Publicado', imagen: 'https://images.unsplash.com/photo-1581092335871-4c7ff2f8321c' }
+        ];
+
+        let paquetes = [
+            { id: 1, nombre: 'Paquete Básico', descripcion: 'Cortina metálica estándar', precio: 8500, estado: 'Activo' },
+            { id: 2, nombre: 'Paquete Industrial', descripcion: 'Cortina industrial automatizada', precio: 25000, estado: 'Activo' },
+            { id: 3, nombre: 'Paquete Premium', descripcion: 'Sistema completo con mantenimiento', precio: 45000, estado: 'Activo' }
+        ];
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            updateBlogTable();
+            updatePaquetesGrid();
+            updateDashboard();
+            updateCounters();
+        });
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.getElementById('mainContent').classList.toggle('expanded');
+        }
+
+        // Mostrar sección
+        function showSection(section) {
+            // Actualizar menú
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Mostrar sección
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(section).classList.add('active');
+        }
+
+        // BLOG CRUD
+        function openBlogModal(editId = null) {
+            if (editId) {
+                const post = blogPosts.find(p => p.id == editId);
+                document.getElementById('blogModalTitle').textContent = 'Editar Post';
+                document.getElementById('blogId').value = post.id;
+                document.getElementById('blogTitulo').value = post.titulo;
+                document.getElementById('blogCategoria').value = post.categoria;
+                document.getElementById('blogContenido').value = post.contenido || '';
+                document.getElementById('blogImagen').value = post.imagen || '';
+            } else {
+                document.getElementById('blogModalTitle').textContent = 'Nuevo Post';
+                document.getElementById('blogForm').reset();
+                document.getElementById('blogId').value = '';
+            }
+            new bootstrap.Modal(document.getElementById('blogModal')).show();
+        }
+
+        function saveBlog() {
+            const id = document.getElementById('blogId').value;
+            const post = {
+                titulo: document.getElementById('blogTitulo').value,
+                categoria: document.getElementById('blogCategoria').value,
+                contenido: document.getElementById('blogContenido').value,
+                imagen: document.getElementById('blogImagen').value,
+                fecha: new Date().toISOString().split('T')[0],
+                estado: 'Publicado'
+            };
+
+            if (id) {
+                // Editar
+                const index = blogPosts.findIndex(p => p.id == id);
+                blogPosts[index] = { ...post, id: parseInt(id) };
+                Swal.fire('Éxito', 'Post actualizado correctamente', 'success');
+            } else {
+                // Nuevo
+                post.id = blogPosts.length + 1;
+                blogPosts.push(post);
+                Swal.fire('Éxito', 'Post creado correctamente', 'success');
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('blogModal')).hide();
+            updateBlogTable();
+            updateDashboard();
+            updateCounters();
+        }
+
+        function deleteBlog(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "No podrás revertir esta acción",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0B1F3A',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    blogPosts = blogPosts.filter(p => p.id != id);
+                    updateBlogTable();
+                    updateDashboard();
+                    updateCounters();
+                    Swal.fire('Eliminado', 'El post ha sido eliminado', 'success');
+                }
+            });
+        }
+
+        function updateBlogTable() {
+            const tbody = document.getElementById('blogTableBody');
+            tbody.innerHTML = blogPosts.map(post => `
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="py-3">${post.titulo}</td>
+                    <td><span class="badge-status" style="background: #e2e3e5;">${post.categoria}</span></td>
+                    <td>${post.fecha}</td>
+                    <td><span class="badge-status ${post.estado === 'Publicado' ? 'badge-active' : 'badge-inactive'}">${post.estado}</span></td>
+                    <td>
+                        <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="openBlogModal(${post.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800" onclick="deleteBlog(${post.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // PAQUETES CRUD
+        function openPaqueteModal(editId = null) {
+            if (editId) {
+                const paquete = paquetes.find(p => p.id == editId);
+                document.getElementById('paqueteModalTitle').textContent = 'Editar Paquete';
+                document.getElementById('paqueteId').value = paquete.id;
+                document.getElementById('paqueteNombre').value = paquete.nombre;
+                document.getElementById('paqueteDescripcion').value = paquete.descripcion;
+                document.getElementById('paquetePrecio').value = paquete.precio;
+                document.getElementById('paqueteEstado').value = paquete.estado;
+            } else {
+                document.getElementById('paqueteModalTitle').textContent = 'Nuevo Paquete';
+                document.getElementById('paqueteForm').reset();
+                document.getElementById('paqueteId').value = '';
+            }
+            new bootstrap.Modal(document.getElementById('paqueteModal')).show();
+        }
+
+        function savePaquete() {
+            const id = document.getElementById('paqueteId').value;
+            const paquete = {
+                nombre: document.getElementById('paqueteNombre').value,
+                descripcion: document.getElementById('paqueteDescripcion').value,
+                precio: document.getElementById('paquetePrecio').value,
+                estado: document.getElementById('paqueteEstado').value
+            };
+
+            if (id) {
+                // Editar
+                const index = paquetes.findIndex(p => p.id == id);
+                paquetes[index] = { ...paquete, id: parseInt(id) };
+                Swal.fire('Éxito', 'Paquete actualizado correctamente', 'success');
+            } else {
+                // Nuevo
+                paquete.id = paquetes.length + 1;
+                paquetes.push(paquete);
+                Swal.fire('Éxito', 'Paquete creado correctamente', 'success');
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('paqueteModal')).hide();
+            updatePaquetesGrid();
+            updateDashboard();
+            updateCounters();
+        }
+
+        function deletePaquete(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "No podrás revertir esta acción",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0B1F3A',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    paquetes = paquetes.filter(p => p.id != id);
+                    updatePaquetesGrid();
+                    updateDashboard();
+                    updateCounters();
+                    Swal.fire('Eliminado', 'El paquete ha sido eliminado', 'success');
+                }
+            });
+        }
+
+        function updatePaquetesGrid() {
+            const grid = document.getElementById('paquetesGrid');
+            grid.innerHTML = paquetes.map(paquete => `
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-[#0B1F3A]">${paquete.nombre}</h3>
+                            <span class="badge-status ${paquete.estado === 'Activo' ? 'badge-active' : 'badge-inactive'}">${paquete.estado}</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">${paquete.descripcion}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-[#FFC107]">$${paquete.precio.toLocaleString()}</span>
+                            <div>
+                                <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="openPaqueteModal(${paquete.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="text-red-600 hover:text-red-800" onclick="deletePaquete(${paquete.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Dashboard updates
+        function updateDashboard() {
+            document.getElementById('recentPostsList').innerHTML = `
+                <ul class="divide-y">
+                    ${blogPosts.slice(0, 3).map(post => `
+                        <li class="py-2 flex justify-between">
+                            <span>${post.titulo}</span>
+                            <span class="text-sm text-gray-500">${post.fecha}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+
+            document.getElementById('recentPaquetesList').innerHTML = `
+                <ul class="divide-y">
+                    ${paquetes.slice(0, 3).map(p => `
+                        <li class="py-2 flex justify-between">
+                            <span>${p.nombre}</span>
+                            <span class="text-sm text-gray-500">$${p.precio.toLocaleString()}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+        }
+
+        function updateCounters() {
+            document.getElementById('totalPosts').textContent = blogPosts.length;
+            document.getElementById('totalPaquetes').textContent = paquetes.length;
+        }
+    </script>
+</body>
+</html>

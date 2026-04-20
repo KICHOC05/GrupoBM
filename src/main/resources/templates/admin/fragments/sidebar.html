@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="sidebar" class="sidebar">
+    
+    <!-- Logo y Header -->
+    <div class="sidebar-logo-container">
+        <img th:src="@{/img/Logo_Cortes.png}" alt="Grupo BM" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/48x48?text=BM'">
+        <div class="sidebar-brand">
+            <h3>Grupo BM</h3>
+            <p>Administración</p>
+        </div>
+    </div>
+    
+    <!-- Navegación -->
+    <ul class="sidebar-nav">
+		
+		<!-- SECCIÓN: INICIO -->
+		  <li class="nav-section">
+		      <span class="nav-section-title">
+		          <i class="fas fa-home"></i>
+		          <span>Inicio</span>
+		      </span>
+		  </li>
+		  
+        <!-- Dashboard -->
+        <li>
+            <a th:href="@{/admin/dashboard}" class="nav-link" data-page="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Inicio</span>
+            </a>
+        </li>
+        
+        <!-- Perfil -->
+        <li>
+            <a th:href="@{/admin/perfil}" class="nav-link" data-page="perfil">
+                <i class="fas fa-user-circle"></i>
+                <span>Mi Perfil</span>
+            </a>
+        </li>
+        
+        <!-- Usuarios -->
+        <li>
+            <a th:href="@{/admin/usuarios}" class="nav-link" data-page="usuarios">
+                <i class="fas fa-users"></i>
+                <span>Usuarios</span>
+            </a>
+        </li>
+        
+        <li class="nav-divider"></li>
+        
+        <!-- SECCIÓN: CONTENIDO -->
+        <li class="nav-section">
+            <span class="nav-section-title">
+                <i class="fas fa-cog"></i>
+                <span>Contenido</span>
+            </span>
+        </li>
+        
+        <!-- Servicios -->
+        <li>
+            <a th:href="@{/admin/servicios}" class="nav-link" data-page="servicios">
+                <i class="fas fa-cogs"></i>
+                <span>Servicios</span>
+            </a>
+        </li>
+        
+        <!-- Blogs -->
+        <li>
+            <a th:href="@{/admin/blogs}" class="nav-link" data-page="blogs">
+                <i class="fas fa-blog"></i>
+                <span>Blogs</span>
+            </a>
+        </li>
+        
+        <!-- Contenido Web -->
+        <li>
+            <a th:href="@{/admin/contenido}" class="nav-link" data-page="contenido">
+                <i class="fas fa-file-alt"></i>
+                <span>Contenido Web</span>
+            </a>
+        </li>
+        
+        <!-- Galería -->
+        <li>
+            <a th:href="@{/admin/galeria}" class="nav-link" data-page="galeria">
+                <i class="fas fa-images"></i>
+                <span>Galería</span>
+            </a>
+        </li>
+		
+		<!-- Clientes -->
+		   <li>
+		       <a th:href="@{/admin/clientes}" class="nav-link" data-page="clientes">
+		           <i class="fas fa-handshake"></i>
+		           <span>Clientes</span>
+		       </a>
+		   </li>
+        
+        <li class="nav-divider"></li>
+        
+        <!-- SECCIÓN: SISTEMA -->
+        <li class="nav-section">
+            <span class="nav-section-title">
+                <i class="fas fa-wrench"></i>
+                <span>Sistema</span>
+            </span>
+        </li>
+        
+        <!-- Configuración -->
+        <li>
+            <a th:href="@{/admin/configuracion}" class="nav-link" data-page="configuracion">
+                <i class="fas fa-sliders-h"></i>
+                <span>Ajustes</span>
+            </a>
+        </li>
+        
+        <!-- Cerrar Sesión -->
+        <li class="nav-divider"></li>
+        <li>
+            <a th:href="@{/logout}" class="nav-link logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </li>
+    </ul>
+    
+    <!-- Footer -->
+    <div class="sidebar-footer">
+        <div class="copyright">
+            <i class="far fa-copyright"></i>
+            <span>2025 Grupo BM</span>
+        </div>
+    </div>
+</div>
+</html>

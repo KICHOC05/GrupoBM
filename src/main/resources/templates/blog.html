@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Grupo BM Cortinas Industriales</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/blog.css}">
+</head>
+<body>
+
+<div class="blog-loading-bar" id="blogLoadingBar"></div>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <!-- HERO BLOG -->
+    <section class="blog-hero">
+        <div class="blog-hero-bg"></div>
+        <div class="container mx-auto px-4 position-relative">
+            <div class="blog-hero-content text-center" data-aos="fade-up">
+                <span class="blog-hero-label">Recursos & Noticias</span>
+                <h1 class="blog-hero-title">Blog <span class="text-accent">GrupoBM</span></h1>
+                <p class="blog-hero-subtitle">Consejos, novedades y soluciones sobre cortinas de acero, corte CNC y protección industrial.</p>
+                <form action="/blog/buscar" method="get" class="blog-search-form">
+                    <div class="blog-search-box">
+                        <i class="fas fa-search blog-search-icon"></i>
+                        <input type="text" name="q" placeholder="Buscar artículos..." class="blog-search-input">
+                        <button type="submit" class="blog-search-btn">Buscar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="blog-main py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <!-- Filtros -->
+            <div class="blog-filters" data-aos="fade-up">
+                <a href="/blog" class="blog-filter-btn active">Todos</a>
+                <a href="/blog?categoria=Cortinas" class="blog-filter-btn"><i class="fas fa-layer-group me-1"></i> Cortinas</a>
+                <a href="/blog?categoria=Corte CNC" class="blog-filter-btn"><i class="fas fa-cut me-1"></i> Corte CNC</a>
+                <a href="/blog?categoria=Mantenimiento" class="blog-filter-btn"><i class="fas fa-tools me-1"></i> Mantenimiento</a>
+                <a href="/blog?categoria=Industria" class="blog-filter-btn"><i class="fas fa-industry me-1"></i> Industria</a>
+            </div>
+
+            <!-- Destacado principal -->
+            <div th:if="${destacadoPrincipal != null}" class="blog-featured-card mb-12" data-aos="fade-up">
+                <div class="blog-featured-img-wrap">
+                    <img th:src="${destacadoPrincipal.imagenPortada}" class="blog-featured-img" alt="Portada">
+                    <span class="blog-featured-badge"><i class="fas fa-star me-1"></i> Destacado</span>
+                </div>
+                <div class="blog-featured-body">
+                    <span class="blog-card-category" th:text="${destacadoPrincipal.categoria}">Categoría</span>
+                    <h2 class="blog-featured-title" th:text="${destacadoPrincipal.titulo}">Título</h2>
+                    <p class="blog-featured-excerpt" th:text="${destacadoPrincipal.resumen}">Resumen</p>
+                    <div class="blog-card-meta">
+                        <span><i class="fas fa-user me-1"></i> GrupoBM</span>
+                    </div>
+                    <div class="blog-featured-actions">
+                        <a th:href="@{/blog/{id}/{slug}(id=${destacadoPrincipal.id}, slug=${#strings.replace(destacadoPrincipal.titulo, ' ', '-')})}" class="blog-read-btn">
+                            Leer artículo <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de artículos -->
+            <div class="blog-grid">
+                <div th:each="a : ${articulos}" class="blog-card" data-aos="fade-up">
+                    <div class="blog-card-img-wrap">
+                        <img th:src="${a.imagenPortada}" class="blog-card-img" alt="Portada">
+                        <span class="blog-card-category-badge" th:text="${a.categoria}">Categoría</span>
+                    </div>
+                    <div class="blog-card-body">
+                        <div class="blog-card-meta mb-2">
+                            <span><i class="fas fa-user me-1"></i> GrupoBM</span>
+                        </div>
+                        <h3 class="blog-card-title" th:text="${a.titulo}">Título</h3>
+                        <p class="blog-card-excerpt" th:text="${a.resumen}">Resumen</p>
+                        <div class="blog-card-footer">
+                            <a th:href="@{/blog/{id}/{slug}(id=${a.id}, slug=${#strings.replace(a.titulo, ' ', '-')})}" class="blog-read-link">Leer más <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paginación -->
+            <div th:if="${totalPages > 1}" class="blog-pagination" data-aos="fade-up">
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li th:class="${currentPage == 1} ? 'page-item disabled' : 'page-item'">
+                            <a th:href="@{/blog(page=${currentPage - 1})}" class="page-link blog-page-link"><i class="fas fa-chevron-left"></i></a>
+                        </li>
+                        <li th:each="i : ${#numbers.sequence(1, totalPages)}" th:class="${i == currentPage} ? 'page-item active' : 'page-item'">
+                            <a th:href="@{/blog(page=${i})}" class="page-link blog-page-link" th:text="${i}">1</a>
+                        </li>
+                        <li th:class="${currentPage == totalPages} ? 'page-item disabled' : 'page-item'">
+                            <a th:href="@{/blog(page=${currentPage + 1})}" class="page-link blog-page-link"><i class="fas fa-chevron-right"></i></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+
+    <section class="blog-cta py-20">
+        <div class="container mx-auto px-4 text-center" data-aos="fade-up">
+            <h2 class="blog-cta-title">¿Tienes un proyecto en mente?</h2>
+            <p class="blog-cta-sub">Nuestros especialistas están listos para asesorarte sin compromiso.</p>
+            <a href="/#contacto" class="btn-vino mt-4 d-inline-block"><i class="fas fa-file-invoice me-2"></i>Solicitar cotización</a>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<a href="https://wa.me/525644091155?text=Hola%20Grupo%20BM,%20me%20interesa%20una%20cotización" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/blog.js}"></script>
+</body>
+</html>

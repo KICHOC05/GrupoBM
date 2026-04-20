@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="footer">
+    <footer class="bg-[#2C0101] text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+
+                <!-- Logo + descripción -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <img th:src="@{/img/Logo_Cortes.png}" alt="Grupo BM Logo" class="footer-logo"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                        <div class="hidden text-white font-bold text-xl">GRUPO BM</div>
+                    </div>
+                    <p class="text-gray-400 mb-4" th:text="${footerConfig.descripcion}">Descripción</p>
+                    <div class="flex space-x-4 text-2xl">
+                        <a th:href="${footerConfig.facebookUrl}" target="_blank" class="hover:text-[#8B0000] transition"><i class="fab fa-facebook"></i></a>
+                        <a th:href="${footerConfig.instagramUrl}" target="_blank" class="hover:text-[#8B0000] transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="hover:text-[#8B0000] transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Servicios dinámicos desde BD -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 border-b-2 border-[#8B0000] pb-2 inline-block">Servicios</h4>
+                    <ul class="space-y-2 mt-4">
+                        <li th:each="s : ${serviciosActivos}">
+                            <a th:href="@{/#paquetes}" class="footer-link"><i class="fas fa-chevron-right text-[#8B0000] text-sm mr-2"></i><span th:text="${s.titulo}">Servicio</span></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contacto -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 border-b-2 border-[#8B0000] pb-2 inline-block">Contacto</h4>
+                    <ul class="space-y-3 mt-4">
+                        <li class="flex items-start"><i class="fas fa-map-marker-alt text-[#8B0000] mt-1 mr-3"></i><span th:text="${footerConfig.direccion}">Dirección</span></li>
+                        <li class="flex items-center"><i class="fab fa-whatsapp text-[#8B0000] mr-3"></i><span th:text="${footerConfig.whatsapp}">WhatsApp</span></li>
+                        <li class="flex items-center"><i class="fas fa-envelope text-[#8B0000] mr-3"></i><span th:text="${footerConfig.email}">Email</span></li>
+                        <li class="flex items-center"><i class="fab fa-instagram text-[#8B0000] mr-3"></i><span th:text="${footerConfig.instagramTexto}">Instagram</span></li>
+                        <li class="flex items-center"><i class="fab fa-facebook text-[#8B0000] mr-3"></i><span th:text="${footerConfig.facebookTexto}">Facebook</span></li>
+                    </ul>
+                </div>
+
+                <!-- Horario -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 border-b-2 border-[#8B0000] pb-2 inline-block">Horario</h4>
+                    <ul class="space-y-3 mt-4">
+                        <li class="flex items-center"><i class="far fa-clock text-[#8B0000] mr-3"></i><span th:text="${footerConfig.horarioLaboral}">Lun-Vie</span></li>
+                        <li class="flex items-center"><i class="far fa-clock text-[#8B0000] mr-3"></i><span th:text="${footerConfig.horarioSabado}">Sábado</span></li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p th:text="${footerConfig.copyright}">Copyright</p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+</body>
+</html>

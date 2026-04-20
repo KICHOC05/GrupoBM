@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuración del Footer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="bg-gray-100 font-['Inter']">
+
+<div class="admin-wrapper">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <div class="main-content">
+        <div th:replace="~{admin/fragments/admin-header :: admin-header}"></div>
+        <div class="content-container">
+            <div class="page-header">
+                <h1 class="page-title">Configuración del Footer</h1>
+                <a th:href="@{/admin/dashboard}" class="btn-secondary-admin"><i class="fas fa-arrow-left"></i> Volver</a>
+            </div>
+
+            <div th:if="${exito}" class="alert-admin alert-success-admin" th:text="${exito}"></div>
+
+            <form method="post" th:action="@{/admin/configuracion/guardar}" class="card-modern max-w-4xl mx-auto">
+                <div class="card-body-modern space-y-6">
+
+                    <!-- Logo y descripción -->
+                    <div class="border-b pb-4">
+                        <h3 class="text-lg font-semibold mb-3">Logo y descripción</h3>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Descripción de la empresa</label>
+                            <textarea name="descripcion" class="form-control-modern" rows="3" th:text="${config.descripcion}"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Contacto -->
+                    <div class="border-b pb-4">
+                        <h3 class="text-lg font-semibold mb-3">Contacto</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Dirección</label>
+                                <input type="text" name="direccion" th:value="${config.direccion}" class="form-control-modern">
+                            </div>
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">WhatsApp</label>
+                                <input type="text" name="whatsapp" th:value="${config.whatsapp}" class="form-control-modern">
+                            </div>
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Email</label>
+                                <input type="email" name="email" th:value="${config.email}" class="form-control-modern">
+                            </div>
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Instagram (texto)</label>
+                                <input type="text" name="instagramTexto" th:value="${config.instagramTexto}" class="form-control-modern">
+                            </div>
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Instagram (URL)</label>
+                                <input type="url" name="instagramUrl" th:value="${config.instagramUrl}" class="form-control-modern">
+                            </div>
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Facebook (texto)</label>
+                                <input type="text" name="facebookTexto" th:value="${config.facebookTexto}" class="form-control-modern">
+                            </div>
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Facebook (URL)</label>
+                                <input type="url" name="facebookUrl" th:value="${config.facebookUrl}" class="form-control-modern">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Horario -->
+                    <div class="border-b pb-4">
+                        <h3 class="text-lg font-semibold mb-3">Horario</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Horario laboral</label>
+                                <input type="text" name="horarioLaboral" th:value="${config.horarioLaboral}" class="form-control-modern">
+                            </div>
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Horario sábado</label>
+                                <input type="text" name="horarioSabado" th:value="${config.horarioSabado}" class="form-control-modern">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Copyright -->
+                    <div class="border-b pb-4">
+                        <h3 class="text-lg font-semibold mb-3">Copyright</h3>
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Texto de copyright</label>
+                            <input type="text" name="copyright" th:value="${config.copyright}" class="form-control-modern">
+                        </div>
+                    </div>
+
+                    <!-- Servicios dinámicos (solo mostrar, no editable aquí) -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Servicios (se mostrarán automáticamente)</h3>
+                        <p class="text-sm text-gray-500 mb-2">Los servicios activos aparecerán en el footer. Puedes editarlos desde <a th:href="@{/admin/servicios}" class="text-[#8B0000]">Gestión de Servicios</a>.</p>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <ul class="grid grid-cols-2 gap-1 text-sm">
+                                <li th:each="s : ${servicios}" th:text="${s.titulo}">Servicio</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 pt-4">
+                        <button type="submit" class="btn-primary-admin">Guardar cambios</button>
+                        <a th:href="@{/admin/dashboard}" class="btn-secondary-admin">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

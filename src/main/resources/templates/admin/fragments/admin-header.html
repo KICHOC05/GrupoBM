@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="admin-header" class="admin-header">
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="header-user">
+        <div class="user-info">
+            <span class="user-name" th:text="${session.user != null ? session.user.nombre + ' ' + (session.user.apellido != null ? session.user.apellido : '') : 'Administrador'}">Administrador</span>
+            <span class="user-role" th:text="${session.user != null ? (session.user.rol == 'ROLE_ADMIN' ? 'Administrador' : 'Usuario') : 'Admin'}">Admin</span>
+        </div>
+        <div class="user-avatar">
+            <i class="fas fa-user-shield"></i>
+        </div>
+    </div>
+</div>
+</html>
